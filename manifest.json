@@ -1,11 +1,9 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-ekr-aliases",
+	"name": "eKR Aliases",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Generate keyboard-friendly aliases like (eKR) 원문 | 영어 입력값 for the current note.",
+	"author": "tripk",
 	"isDesktopOnly": false
 }

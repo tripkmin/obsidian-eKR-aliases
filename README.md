@@ -1,94 +1,69 @@
-# Obsidian Sample Plugin
+# eKR Aliases for Obsidian
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+> Generate `(eKR)` aliases that pair Korean text with its Dubeolsik keyboard transliteration.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+-   Reads the note title plus every value inside the frontmatter `aliases` array.
+-   Removes previously generated `(eKR)` entries before creating fresh ones in the format `(eKR) {Original} | {Transliteration}`.
+-   Works on individual files, every note inside the current folder, or the entire vault.
 
-## First time developing plugins?
+## Commands
 
-Quick starting guide for new plugin devs:
+-   `Refresh eKR aliases (current file)`: Updates the active Markdown file.
+-   `Refresh eKR aliases (current folder)`: Recursively updates every Markdown file that lives under the active file’s parent folder.
+-   `Refresh eKR aliases (entire vault)`: Updates all Markdown files returned by `app.vault.getMarkdownFiles()`.
+-   Ribbon button: mirrors the “current file” command for quick access.
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+Each command shows a summary notice and logs detailed error information to the developer console when something fails.
 
-## Releasing new releases
+## Usage
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+1. Run `npm install`.
+2. Use `npm run dev` during development or `npm run build` for production bundles.
+3. Copy `main.js`, `manifest.json`, and `styles.css` into `<Vault>/.obsidian/plugins/obsidian-eKR-aliases/`.
+4. Enable the plugin in Obsidian, then trigger one of the commands above via the command palette or the ribbon icon.
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+The plugin rewrites only the note frontmatter; the body content stays untouched.
 
-## Adding your plugin to the community plugin list
+## Development Notes
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+-   Built with TypeScript and bundled via esbuild (see `esbuild.config.mjs`).
+-   Core logic lives in `src/alias-updater.ts` and `src/transliterate.ts`.
+-   Scope-aware helpers reuse the same updater so there’s no divergence between single-file and batch executions.
 
-## How to use
+---
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+# eKR Aliases 플러그인
 
-## Manually installing the plugin
+> `(eKR)` 접두사를 가진 alias를 자동으로 생성해 한국어 문자열과 두벌식(QWERTY) 입력값을 함께 보관합니다.
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+## 주요 기능
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint ./src/`
+-   노트 제목과 frontmatter `aliases` 배열을 읽어 원문 문자열을 수집합니다.
+-   기존 `(eKR)` alias를 전부 제거한 뒤 `(eKR) {원문} | {두벌식}` 형식으로 다시 생성합니다.
+-   단일 파일, 현재 폴더 전체, 볼트 전체 단위로 실행할 수 있습니다.
 
-## Funding URL
+## 명령어
 
-You can include funding URLs where people who use your plugin can financially support it.
+-   `Refresh eKR aliases (current file)`: 현재 활성화된 마크다운 파일만 업데이트합니다.
+-   `Refresh eKR aliases (current folder)`: 현재 파일이 속한 폴더(하위 폴더 포함)의 모든 마크다운 파일을 순회합니다.
+-   `Refresh eKR aliases (entire vault)`: 볼트의 모든 마크다운 파일을 대상으로 실행합니다.
+-   좌측 리본 아이콘: “current file” 명령을 빠르게 실행합니다.
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+각 명령은 결과 요약을 알림으로 보여 주며, 실패 시 콘솔에 자세한 오류 정보를 남깁니다.
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
+## 사용 방법
 
-If you have multiple URLs, you can also do:
+1. `npm install`로 의존성을 설치합니다.
+2. 개발 중에는 `npm run dev`, 배포용 번들을 만들 때는 `npm run build`를 실행합니다.
+3. 생성된 `main.js`, `manifest.json`, `styles.css` 파일을 `<Vault>/.obsidian/plugins/obsidian-eKR-aliases/` 경로에 복사합니다.
+4. Obsidian에서 플러그인을 활성화한 뒤 명령 팔레트나 리본 아이콘으로 원하는 스코프의 명령을 선택합니다.
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+플러그인은 frontmatter만 변경하며, 본문 내용은 수정하지 않습니다.
 
-## API Documentation
+## 개발 메모
 
-See https://github.com/obsidianmd/obsidian-api
+-   TypeScript + esbuild 조합을 사용하며 설정은 `esbuild.config.mjs`에 있습니다.
+-   주요 로직은 `src/alias-updater.ts`, 변환기는 `src/transliterate.ts`에서 확인할 수 있습니다.
+-   배치 명령도 단일 파일 업데이트 함수를 그대로 재사용해 일관된 결과를 보장합니다.
